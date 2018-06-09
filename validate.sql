@@ -1,0 +1,7 @@
+CONNECT TO CS240 @
+
+SELECT count(*) 
+	FROM PREDICTION AS P JOIN VTESTLABEL AS T 
+	ON P.TupleId = T.TupleID AND P.ClassLL = T.ClassLL @
+
+SELECT count(*) from VTESTLABEL @
