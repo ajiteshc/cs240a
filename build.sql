@@ -1,7 +1,7 @@
 CONNECT TO CS240 @
 
--- For non-numeric data
--- NBC contains actual frequency counts for all column value class combinations
+-- For non-numeric data.
+-- NBC contains actual frequency counts for all column value class combinations.
 DROP TABLE NBC @
 
 CREATE TABLE NBC (
@@ -12,14 +12,14 @@ CREATE TABLE NBC (
 ) @
 
 INSERT INTO NBC
-	SELECT ColName, ColVal, ClassLL, count(*) AS Freq FROM 
-	(SELECT ColName, ColVal, ClassLL FROM VTRAINDATA INNER JOIN VTRAINLABEL 
+	SELECT ColName, ColVal, ClassLL, count(*) AS Freq FROM
+	(SELECT ColName, ColVal, ClassLL FROM VTRAINDATA INNER JOIN VTRAINLABEL
 		ON VTRAINDATA.TupleId = VTRAINLABEL.TupleId)
 	GROUP BY ColName, ColVal, ClassLL @
 
 DROP TABLE VTRAINDATA @
 
--- NBCTEST contains frequency counts for all column value class combinations in testing dataset
+-- NBCTEST contains frequency counts for all column value class combinations in testing dataset.
 
 DROP TABLE NBCTEST @
 
@@ -30,21 +30,23 @@ CREATE TABLE NBCTEST (
 ) @
 
 INSERT INTO NBCTEST
-	SELECT ColName, ColVal, ClassLL AS Freq FROM 
-	(SELECT ColName, ColVal, ClassLL FROM VTESTDATA INNER JOIN VTESTLABEL 
+	SELECT ColName, ColVal, ClassLL AS Freq FROM
+	(SELECT ColName, ColVal, ClassLL FROM VTESTDATA INNER JOIN VTESTLABEL
 		ON VTESTDATA.TupleId = VTESTLABEL.TupleId)
 	GROUP BY ColName, ColVal, ClassLL @
 
--- Insert combinations present in testing dataset but missing from training dataset
+-- Insert combinations present in testing dataset but missing from training dataset.
 INSERT INTO NBC
 	SELECT NBCTEST.ColName, NBCTEST.ColVal, NBCTEST.ClassLL, 0
-	FROM NBCTEST
-	LEFT JOIN NBC on NBCTEST.ColName = NBC.ColName and NBCTEST.ColVal = NBC.ColVal and NBCTEST.ClassLL = NBC.ClassLL
-	WHERE NBC.ColName is null @
+		FROM NBCTEST LEFT JOIN NBC
+		ON NBCTEST.ColName = NBC.ColName
+			AND NBCTEST.ColVal = NBC.ColVal
+			AND NBCTEST.ClassLL = NBC.ClassLL
+		WHERE NBC.ColName is null @
 
 DROP TABLE NBCTEST @
 
--- For numeric data
+-- For numeric data.
 DROP TABLE NBCNUMERIC @
 
 CREATE TABLE NBCNUMERIC (
@@ -61,7 +63,8 @@ INSERT INTO NBCNUMERIC
 		GROUP BY ColName, ClassLL @
 
 DROP TABLE VTRAINDATANUMERIC @
--- Apply Smoothing
+
+-- Apply Smoothing.
 CREATE OR REPLACE PROCEDURE smoothing(IN TabName VARCHAR(50), IN ColName VARCHAR(50), IN SmoothVal INTEGER)
 LANGUAGE SQL
 BEGIN
@@ -71,4 +74,5 @@ BEGIN
 END @
 
 CALL smoothing('NBC', 'Freq', 1) @
+
 -- No smoothing is needed for NBCNUMERIC since it contains only numeric values

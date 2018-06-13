@@ -53,6 +53,7 @@ CREATE TABLE test2 (
 	y VARCHAR(50)
 ) @
 
+-- Divide into partitions based on row positions.
 BEGIN
 	DECLARE total_rows INTEGER;
 	DECLARE test_rows INTEGER;

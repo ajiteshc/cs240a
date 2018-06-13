@@ -57,6 +57,7 @@ CREATE TABLE test1 (
 	habitat VARCHAR(50)
 ) @
 
+-- Divide into partitions randomly.
 BEGIN
 	FOR temp AS SELECT * FROM dataset1 ORDER BY row_id DO
 		IF rand() > 0.8 THEN

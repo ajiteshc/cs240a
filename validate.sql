@@ -1,12 +1,12 @@
 CONNECT TO CS240 @
 
 -- Number of test tuples for which class labels were correctly predicted.
-SELECT count(*) 
+SELECT COUNT(*)
 	FROM PREDICTION AS P JOIN VTESTLABEL AS T 
 	ON P.TupleId = T.TupleID AND P.ClassLL = T.ClassLL @
 
 -- Total number of test tuples.
-SELECT count(*) from VTESTLABEL @
+SELECT COUNT(*) FROM VTESTLABEL @
 
 DROP TABLE ACCURACY @
 
@@ -25,7 +25,7 @@ BEGIN
 								PREDICTION AS P JOIN VTESTLABEL AS T 
 								ON P.TupleId = T.TupleID AND P.ClassLL = T.ClassLL) ;
 	
-	SET testSamples = (SELECT count(*) from VTESTLABEL);
+	SET testSamples = (SELECT COUNT(*) FROM VTESTLABEL);
 	
 	SET accuracy = correctClassified * 100 / testSamples;
 	

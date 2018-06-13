@@ -1,5 +1,6 @@
 CONNECT TO CS240 @
 
+-- LABELFREQ containes class label frequencies in train data.
 DROP TABLE LABELFREQ @
 
 CREATE TABLE LABELFREQ (
@@ -10,6 +11,7 @@ CREATE TABLE LABELFREQ (
 INSERT INTO LABELFREQ 
 	SELECT ClassLL, count(ClassLL) FROM VTRAINLABEL GROUP BY ClassLL @
 
+-- PREDICTION table holds the actual predicted class labels.
 DROP TABLE PREDICTION @
 
 CREATE TABLE PREDICTION (
