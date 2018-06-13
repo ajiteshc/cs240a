@@ -59,14 +59,13 @@ CREATE TABLE test1 (
 
 BEGIN
 	DECLARE total_rows INTEGER;
-	DECLARE train_rows INTEGER;
 	DECLARE test_rows INTEGER;
 	DECLARE counter INTEGER;
 	SET total_rows = (SELECT COUNT(*) FROM dataset1);
 	SET test_rows = total_rows / 5;
 	SET counter = 1;
 	FOR temp AS SELECT * FROM dataset1 ORDER BY row_id DO
-		IF rand() > 0.8 THEN
+		IF counter <= test_rows THEN
 			INSERT INTO test1 VALUES
 				(temp.row_id,
 				temp.eatable,
@@ -122,3 +121,5 @@ BEGIN
 		SET counter = counter + 1;
 	END FOR;
 END @
+
+DROP TABLE dataset1 @

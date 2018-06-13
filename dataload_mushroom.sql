@@ -31,5 +31,11 @@ CREATE TABLE dataset1 (
 
 
 LOAD FROM '../data/mushroom/agaricus-lepiota.data' 
-OF DEL MODIFIED by coldel, IDENTITYMISSING MESSAGES load_stat.txt
+OF DEL MODIFIED by coldel, IDENTITYMISSING
 INSERT INTO dataset1 @
+
+DROP TABLE numeric @
+
+CREATE TABLE numeric (
+	ColName VARCHAR(50)
+) @

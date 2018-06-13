@@ -1,5 +1,6 @@
 CONNECT TO CS240 @
 
+-- For non-numeric data
 -- NBC contains actual frequency counts for all column value class combinations
 DROP TABLE NBC @
 
@@ -16,7 +17,10 @@ INSERT INTO NBC
 		ON VTRAINDATA.TupleId = VTRAINLABEL.TupleId)
 	GROUP BY ColName, ColVal, ClassLL @
 
+DROP TABLE VTRAINDATA @
+
 -- NBCTEST contains frequency counts for all column value class combinations in testing dataset
+
 DROP TABLE NBCTEST @
 
 CREATE TABLE NBCTEST (
@@ -38,6 +42,25 @@ INSERT INTO NBC
 	LEFT JOIN NBC on NBCTEST.ColName = NBC.ColName and NBCTEST.ColVal = NBC.ColVal and NBCTEST.ClassLL = NBC.ClassLL
 	WHERE NBC.ColName is null @
 
+DROP TABLE NBCTEST @
+
+-- For numeric data
+DROP TABLE NBCNUMERIC @
+
+CREATE TABLE NBCNUMERIC (
+	ColName VARCHAR(50),
+	ClassLL VARCHAR(50),
+	Mean DOUBLE,
+	Variance DOUBLE
+) @
+
+INSERT INTO NBCNUMERIC
+	SELECT ColName, ClassLL, AVG(ColVal), VARIANCE(ColVal)
+		FROM VTRAINDATANUMERIC INNER JOIN VTRAINLABEL 
+			ON VTRAINDATANUMERIC.TupleId = VTRAINLABEL.TupleId
+		GROUP BY ColName, ClassLL @
+
+DROP TABLE VTRAINDATANUMERIC @
 -- Apply Smoothing
 CREATE OR REPLACE PROCEDURE smoothing(IN TabName VARCHAR(50), IN ColName VARCHAR(50), IN SmoothVal INTEGER)
 LANGUAGE SQL
@@ -48,4 +71,4 @@ BEGIN
 END @
 
 CALL smoothing('NBC', 'Freq', 1) @
-
+-- No smoothing is needed for NBCNUMERIC since it contains only numeric values
