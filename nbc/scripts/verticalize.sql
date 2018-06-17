@@ -6,14 +6,14 @@ DROP TABLE vtraindatanumeric @
 CREATE TABLE vtraindata (
 	TupleId INTEGER,
 	ColNum INTEGER,
-	ColName VARCHAR(50),
+	ColName VARCHAR(100),
 	ColVal VARCHAR(100)
 ) @
 
 CREATE TABLE vtraindatanumeric (
 	TupleId INTEGER,
 	ColNum INTEGER,
-	ColName VARCHAR(50),
+	ColName VARCHAR(100),
 	ColVal DOUBLE
 ) @
 
@@ -21,7 +21,7 @@ DROP TABLE vtrainlabel @
 
 CREATE TABLE vtrainlabel (
 	TupleId INTEGER,
-	ClassLL VARCHAR(50)
+	ClassLL VARCHAR(100)
 ) @
 
 DROP TABLE vtestdata @
@@ -30,14 +30,14 @@ DROP TABLE vtestdatanumeric @
 CREATE TABLE vtestdata (
 	TupleId INTEGER,
 	ColNum INTEGER,
-	ColName VARCHAR(50),
+	ColName VARCHAR(100),
 	ColVal VARCHAR(100)
 ) @
 
 CREATE TABLE vtestdatanumeric (
 	TupleId INTEGER,
 	ColNum INTEGER,
-	ColName VARCHAR(50),
+	ColName VARCHAR(100),
 	ColVal DOUBLE
 ) @
 
@@ -45,7 +45,7 @@ DROP TABLE vtestlabel @
 
 CREATE TABLE vtestlabel (
 	TupleId INTEGER,
-	ClassLL VARCHAR(50)
+	ClassLL VARCHAR(100)
 ) @
 
 CREATE OR REPLACE PROCEDURE getTotalColumns(IN TabName VARCHAR(100), OUT TotCols INTEGER)
@@ -67,7 +67,7 @@ BEGIN
 END @
 
 
-CREATE OR REPLACE PROCEDURE verticalize(IN TrainTabName VARCHAR(50), IN TestTabName VARCHAR(50), IN classColName VARCHAR(100))
+CREATE OR REPLACE PROCEDURE verticalize(IN TrainTabName VARCHAR(100), IN TestTabName VARCHAR(100), IN classColName VARCHAR(100))
 LANGUAGE SQL
 BEGIN
 	DECLARE TCol INTEGER;

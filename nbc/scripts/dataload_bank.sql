@@ -5,26 +5,26 @@ DROP TABLE dataset2 @
 CREATE TABLE dataset2 (
 	row_id INTEGER NOT NULL GENERATED ALWAYS AS IDENTITY (START WITH +1, INCREMENT BY +1),
 	age INTEGER,
-	job VARCHAR(50),
-	marital VARCHAR(50),
-	education VARCHAR(50),
-	default VARCHAR(50),
-	housing VARCHAR(50),
-	loan VARCHAR(50),
-	contact VARCHAR(50),
-	month VARCHAR(50),
-	day_of_week VARCHAR(50),
+	job VARCHAR(100),
+	marital VARCHAR(100),
+	education VARCHAR(100),
+	default VARCHAR(100),
+	housing VARCHAR(100),
+	loan VARCHAR(100),
+	contact VARCHAR(100),
+	month VARCHAR(100),
+	day_of_week VARCHAR(100),
 	duration INTEGER,
 	campaign INTEGER,
 	pdays INTEGER,
 	previous DOUBLE,
-	poutcome VARCHAR(50),
+	poutcome VARCHAR(100),
 	emp_var_rate DOUBLE,
 	cons_price_idx DOUBLE,
 	cons_conf_idx DOUBLE,
 	euribor3m DOUBLE,
 	nr_employed DOUBLE,
-	y VARCHAR(50)
+	y VARCHAR(100)
 ) @
 
 
@@ -56,7 +56,7 @@ INSERT INTO dataset2
 DROP TABLE numeric @
 
 CREATE TABLE numeric (
-	ColName VARCHAR(50)
+	ColName VARCHAR(100)
 ) @
 
 INSERT INTO numeric (ColName) VALUES
