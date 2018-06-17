@@ -1,0 +1,88 @@
+% Schema
+database({
+	train(TupleID:integer, ColNo:integer, ColVal:float),
+	train_label(TupleID: integer, ClassLL:integer),
+	test(TupleID:integer, ColNo:integer, ColVal:float),
+	test_label(TupleID:integer, ClassLL:integer)
+}).
+
+% Rules
+distance(TestID, TrainID, ColNo, Dist) <-
+	test(TestID, ColNo, TestVal),
+	train( TrainID, ColNo, TrainVal),
+	Dist = (TestVal-TrainVal)*(TestVal-TrainVal).
+
+distance_sum(TestID, TrainID, sum<(Dist)>) <-
+	distance(TestID, TrainID, _, Dist).
+
+min_distance_sum(TestID, min<Dist>) <-
+	distance_sum(TestID, _, Dist).
+
+export distance(W, X, Y, Z).
+
+export distance_sum(X, Y, Z).
+export distance_sum($X, $Y, Z).
+
+between(TestID, TrainID1, TrainID3) <-
+	test_train_pair(TestID, TrainID1),
+	test_train_pair(TestID, TrainID2),
+	test_train_pair(TestID, TrainID3),
+	distance_sum(TestID, TrainID1, Dist1),
+	distance_sum(TestID, TrainID2, Dist2),
+	distance_sum(TestID, TrainID3, Dist3),
+	Dist1 < Dist2,
+	Dist2 < Dist3,
+	TrainID1 ~= TrainID2,
+	TrainID2 ~= TrainID3,
+	TrainID1 ~= TrainID3.
+
+export between($X, $Y, $Z).
+
+smaller(TestID, TrainID1)<-
+	distance_sum(TestID, TrainID1, Dist1),
+	distance_sum(TestID, TrainID2, Dist2),
+	Dist2 < Dist1.
+
+export smaller(X, Y).
+
+test_tuple(1).
+export test_tuple(X).
+
+test_train_pair(TestID, TrainID)<-
+	test_tuple(TestID),
+	distance_sum(TestID, TrainID, _).
+
+order_tuple(TestID, TrainID, 1) <-
+	test_train_pair(TestID, TrainID),
+	~smaller(TestID2, TrainID).
+
+order_tuple(TestID, TrainID1, K+1) <-
+	test_tuple(TestID),
+	test_train_pair(TestID, TrainID1),
+	distance_sum(TestID, TrainID, Dist1),
+	distance_sum(TestID, TrainID1, Dist2),
+	Dist2 > Dist1,
+	order_tuple(TestID ,TrainID ,K),
+	~between(TestID, TrainID, TrainID1),
+	K < 3.
+export order_tuple(X, Y, Z).
+
+k_labels(TestID, TrainID, Label) <-
+	order_tuple(TestID, TrainID, _),
+	train_label(TrainID, Label).
+
+k_labels_count(TestID, Label, count<TrainID>) <-
+	k_labels(TestID, TrainID, Label).
+
+predicted_label(TestID, max<Count>) <-
+	k_labels_count(TestID, _, Count).
+
+prediction(TestID, Label) <-
+	k_labels_count(TestID, Label, Count1),
+	predicted_label(TestID, Count2),
+	Count1 = Count2.
+
+query k_labels_count(TestID, ClassLL, ClassCount).
+query predicted_label(ClassLL, ClassCount).
+query prediction(TestID, ClassLL).
+
