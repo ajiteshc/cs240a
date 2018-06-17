@@ -82,7 +82,7 @@ prediction(TestID, Label) <-
 	predicted_label(TestID, Count2),
 	Count1 = Count2.
 
-query k_labels_count(TestID, ClassLL, ClassCount).
-query predicted_label(ClassLL, ClassCount).
+%query k_labels_count(TestID, ClassLL, ClassCount).
+%query predicted_label(ClassLL, ClassCount).
 query prediction(TestID, ClassLL).
 

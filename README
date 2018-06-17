@@ -1,0 +1,114 @@
+CS 240A Final Project - README file
+
+Team members:
+Ajitesh Chandak
+UID: 005024265
+Email: ajitesh@g.ucla.edu
+
+Gurupavan Mazumdar
+UID: 804945280
+Email: mazumdar.pavan@gmail.com
+
+
+Unzip the uploaded zip to a new directory to have the structure as:
+.
+├── CS240A\ Report.docx
+├── README
+├── cs240a_project_s18.pdf
+├── knn
+│   ├── data
+│   │   ├── Hill-Valley.names
+│   │   ├── Hill_Valley_with_noise_Testing.data
+│   │   ├── Hill_Valley_with_noise_Training.data
+│   │   ├── Hill_Valley_without_noise_Testing.data
+│   │   └── Hill_Valley_without_noise_Training.data
+│   ├── deal
+│   │   ├── DeALS-0.91.jar
+│   │   ├── knn.deal
+│   │   ├── preproc.class
+│   │   ├── preproc.java
+│   │   ├── run.deal
+│   │   └── runfile.sh
+│   └── sql
+│       ├── build.sql
+│       ├── dataload.sql
+│       ├── validate.sql
+│       └── verticalize.sql
+└── nbc
+    ├── data
+    │   ├── bank
+    │   │   ├── bank-full.csv
+    │   │   ├── bank-names.txt
+    │   │   └── bank.csv
+    │   ├── bank-additional
+    │   │   ├── bank-additional-full.csv
+    │   │   ├── bank-additional-names.txt
+    │   │   └── bank-additional.csv
+    │   ├── bank-additional.zip
+    │   ├── bank.zip
+    │   └── mushroom
+    │       ├── agaricus-lepiota.data
+    │       └── agaricus-lepiota.names
+    └── scripts
+        ├── build.sql
+        ├── dataload_bank.sql
+        ├── dataload_mushroom.sql
+        ├── partition1_bank.sql
+        ├── partition1_mushroom.sql
+        ├── partition2_bank.sql
+        ├── partition2_mushroom.sql
+        ├── test.sql
+        ├── validate.sql
+        └── verticalize.sql
+
+
+Machine used for development and deployment:
+Product:	Apple MacBook Air (Early 2015)
+Processor:	1.6 GHz Intel Core i5 (I5-5250U)
+Memory:		8 GB 1600 MHz DDR3
+Details at:	https://everymac.com/systems/apple/macbook-air/specs/macbook-air-core-i5-1.6-13-early-2015-specs.html
+
+
+No preprocessing was done on the datasets explicitly. The dataset files were directly downloaded from the online repository and then modified by the script files (only for KNN DeALs) if needed.
+
+
+For DB2 development:
+1. IBM Db2 Developer Community Edition for Mac OS X was installed from the IBM website. A docker environment was set up which had two docker images running, one for db2 express c (db2server) and the other for data server manager (dsm). Latest DB2 Version 11.1.3.3 at this time was installed.
+2. Using the command 'docker exec -it db2server bash -c "su - db2inst1"', log into the db2server container to run db2 scripts. Within db2server, the path '/database/' is a mirror copy of '/Users/<username>/Library/Application Support/ibm-db2-developerc/DB2/db2fs' on the local machine. All script files were inside this path and then run within the db2server container.
+3. Opening an interactive db2 shell can be triggered by typing the command 'db2' to the db2server container shell.
+4. On the local machine, using a web browser, the address 'localhost:11080' is the WebUI for viewing and managing the db2server running by the dsm container. Hence, any visualization of tables or databases were done using the dsm via the web browser.
+5. Referenced material for setup of the environment at 'http://www.db2dean.com/Previous/Db2CommunityDocker.html'.
+
+
+For all DB2 scripts:
+1. Run go to the path specified and run the script '<file>.sql' as 'db2 -td@ -vmf <file>.sql'. -td@ is used since @ is used as the delimiter for the script files and -vmf serves as options to get verbose output to the terminal.
+2. The scripts try to connect to the database named 'CS240'. So it is required to create a new database 'CS240' if it does not exist using 'db2 create database CS240' inside the db2server container shell for the scripts to run without any error.
+3. All the tables necessary for computation will be created and dropped as necessary by the scripts when run.
+
+
+For running NBC scripts:
+1. Go to nbc/scripts.
+2. Choose a dataset to use, either mushroom or bank. Run the appropriate data load file, 'dataload_mushroom.sql' for mushroom dataset and 'dataload_bank.sql' for bank dataset.
+3. Next run any one of the partition scripts to divide the entire dataset into training and testing parts. Filename is structured as 'partition<method>_<dataset>.sql'. Method=1 is a static division of the dataset into 1:4 for test:train tuples; method=2 is a random division using a random number generator for the dataset into approximately 1:4 for test:train tuples. dataset=mushroom if the mushroom dataset is loaded; dataset=bank if the bank dataset is loaded.
+4. Beyond this point, the scripts are generic and independent of the dataset. Run 'verticalize.sql' to verticalize the tables. The last line of the script file makes a call to the procedure 'verticalize'. If using the mushroom dataset, keep the first call uncommented and the second call commented. If using the bank dataset, keep the first call commented and the second call uncommented.
+5. Run 'build.sql' to create the NBC lookup table.
+6. Run 'test.sql' to run predictions on the test tuples.
+7. Run 'validate.sql' to get the accuracy score, stored inside the table 'ACCURACY'.
+8. The scripts dynamically drop tables once they are no longer needed for further processing, to have lower memory and storage pressure.
+
+
+For running KNN SQL scripts:
+1. Go to knn/sql.
+2. Run the scripts in the order as: 'dataload.sql', verticalize.sql', 'build.sql', 'validate.sql'.
+3. The final accuracy score is stored in the table 'ACCURACY'.
+4. The script 'build.sql' is where the actual prediction is done. On our machine, it took about 15 seconds for each test tuple prediction. So if the script is run as it is, it takes about ~2.5 hours for computation. To test on only some of the tuples, the variable 'testTotal' can be hardcoded to a value as desired. The call to procedure knn has a parameter which specifies how many nearest neighbors to consider during prediction (20 is used).
+
+
+For running KNN DeALs scripts:
+1. Go to knn/deals.
+2. Compile the 'preproc.java' file using 'javac preproc.java'. This file first verticalizes the dataset files into DeALs fact statements ready to be loaded when executed. Two static variables define the number of tuples to be considered for the prediction process; 'TRAIN_LIMIT' for number of training tuples; 'TEST_LIMIT' for number of testing tuples. Then the file appends the code for KNN in DeALs from the file 'knn.deal' to the output stream.
+3. Run the compiled Java class file as 'java preproc'. Pipe the output to a file which will next serve as an input to the DeALs interpreter like 'java preproc > run.deal'.
+4. Run the DeALs interpreter with the output file from the previous step as the parameter like './runfile.sh DeALs-0.91.jar run.deal'. The predicate 'prediction(TestID, ClassLL)' gives the prediction for the testing tuples.
+5. The value of K for number of nearest neighbors consideration is defined in the 'knn.deal' file (currently set as 5).
+6. All the commands can be run as a single line as 'javac preproc.java; java preproc > run.deal; ./runfile.sh DeALS-0.91.jar run.deal'.
+
