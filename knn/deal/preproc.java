@@ -20,7 +20,7 @@ public class preproc {
 		br.readLine();
 		row = 1;
 		
-		// Read each line and format as a fact statement for DeALs.
+		// Read each line and format as a fact statement for DeALS.
 		while (row <= TRAIN_LIMIT && (line = br.readLine()) != null) {
 			List<String> columns = Arrays.asList(line.split(","));
 			// For each column attribute, output a verticalized format statement.
@@ -38,7 +38,7 @@ public class preproc {
 		br.readLine();
 		row = 1;
 		
-		// Read each line and format as a fact statement for DeALs.
+		// Read each line and format as a fact statement for DeALS.
 		while (row <= TEST_LIMIT && (line = br.readLine()) != null) {
 			List<String> columns = Arrays.asList(line.split(","));
 			// For each column attribute, output a verticalized format statement.
@@ -51,11 +51,11 @@ public class preproc {
 		
 		System.out.println("% KNN code");
 		System.out.println();
-		outputDeALsCode();
+		outputDeALSCode();
 	}
 	
-	// Print the deals code to the output stream.
-	private static void outputDeALsCode() throws IOException, FileNotFoundException {
+	// Print the DeALS code to the output stream.
+	private static void outputDeALSCode() throws IOException, FileNotFoundException {
 		File codeFile;
 		BufferedReader br;
 		String line;

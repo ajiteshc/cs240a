@@ -69,7 +69,7 @@ Memory:		8 GB 1600 MHz DDR3
 Details at:	https://everymac.com/systems/apple/macbook-air/specs/macbook-air-core-i5-1.6-13-early-2015-specs.html
 
 
-No preprocessing was done on the datasets explicitly. The dataset files were directly downloaded from the online repository and then modified by the script files (only for KNN DeALs) if needed.
+No preprocessing was done on the datasets explicitly. The dataset files were directly downloaded from the online repository and then modified by the script files (only for KNN DeALS) if needed.
 
 
 For DB2 development:
@@ -104,11 +104,11 @@ For running KNN SQL scripts:
 4. The script 'build.sql' is where the actual prediction is done. On our machine, it took about 15 seconds for each test tuple prediction. So if the script is run as it is, it takes about ~2.5 hours for computation. To test on only some of the tuples, the variable 'testTotal' can be hardcoded to a value as desired. The call to procedure knn has a parameter which specifies how many nearest neighbors to consider during prediction (20 is used).
 
 
-For running KNN DeALs scripts:
+For running KNN DeALS scripts:
 1. Go to knn/deals.
-2. Compile the 'preproc.java' file using 'javac preproc.java'. This file first verticalizes the dataset files into DeALs fact statements ready to be loaded when executed. Two static variables define the number of tuples to be considered for the prediction process; 'TRAIN_LIMIT' for number of training tuples; 'TEST_LIMIT' for number of testing tuples. Then the file appends the code for KNN in DeALs from the file 'knn.deal' to the output stream.
-3. Run the compiled Java class file as 'java preproc'. Pipe the output to a file which will next serve as an input to the DeALs interpreter like 'java preproc > run.deal'.
-4. Run the DeALs interpreter with the output file from the previous step as the parameter like './runfile.sh DeALs-0.91.jar run.deal'. The predicate 'prediction(TestID, ClassLL)' gives the prediction for the testing tuples.
+2. Compile the 'preproc.java' file using 'javac preproc.java'. This file first verticalizes the dataset files into DeALS fact statements ready to be loaded when executed. Two static variables define the number of tuples to be considered for the prediction process; 'TRAIN_LIMIT' for number of training tuples; 'TEST_LIMIT' for number of testing tuples. Then the file appends the code for KNN in DeALS from the file 'knn.deal' to the output stream.
+3. Run the compiled Java class file as 'java preproc'. Pipe the output to a file which will next serve as an input to the DeALS interpreter like 'java preproc > run.deal'.
+4. Run the DeALS interpreter with the output file from the previous step as the parameter like './runfile.sh DeALS-0.91.jar run.deal'. The predicate 'prediction(TestID, ClassLL)' gives the prediction for the testing tuples.
 5. The value of K for number of nearest neighbors consideration is defined in the 'knn.deal' file (currently set as 5).
 6. All the commands can be run as a single line as 'javac preproc.java; java preproc > run.deal; ./runfile.sh DeALS-0.91.jar run.deal'.
 
